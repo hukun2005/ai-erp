@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI-ERP 正在启动</title>
+    <style>
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(circle at 20% 10%, #1e3a8a 0%, #0f172a 55%, #020617 100%);
+        color: #e2e8f0;
+        font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+        user-select: none;
+      }
+      .wrap { text-align: center; }
+      .logo {
+        width: 64px; height: 64px; margin: 0 auto 18px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #38bdf8, #6366f1);
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 24px; letter-spacing: 1px;
+        box-shadow: 0 12px 30px rgba(56, 189, 248, 0.35);
+      }
+      h1 { font-size: 20px; margin: 0 0 6px; font-weight: 600; }
+      p { margin: 0; font-size: 13px; color: #94a3b8; }
+      .bar {
+        margin: 22px auto 0; width: 180px; height: 4px; border-radius: 999px;
+        background: rgba(148, 163, 184, 0.25); overflow: hidden;
+      }
+      .bar::after {
+        content: ""; display: block; height: 100%; width: 40%;
+        border-radius: 999px; background: linear-gradient(90deg, #38bdf8, #818cf8);
+        animation: slide 1.2s ease-in-out infinite;
+      }
+      @keyframes slide {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(350%); }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="logo">ERP</div>
+      <h1>AI-ERP 智能管理系统</h1>
+      <p>正在启动本地服务，请稍候…</p>
+      <div class="bar"></div>
+    </div>
+  </body>
+</html>

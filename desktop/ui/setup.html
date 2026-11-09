@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI-ERP 使用模式设置</title>
+    <style>
+      :root {
+        --bg: #f5f7fb;
+        --card: #ffffff;
+        --line: #e5e9f2;
+        --text: #0f172a;
+        --muted: #64748b;
+        --primary: #2563eb;
+        --primary-dark: #1d4ed8;
+        --ok: #16a34a;
+        --err: #dc2626;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; background: var(--bg); color: var(--text);
+        font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif; }
+      body { padding: 28px 32px 96px; }
+      header { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+      .logo {
+        width: 44px; height: 44px; border-radius: 12px;
+        background: linear-gradient(135deg, #38bdf8, #6366f1);
+        color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center;
+      }
+      header h1 { margin: 0; font-size: 20px; }
+      header p { margin: 4px 0 0; font-size: 12px; color: var(--muted); }
+      .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+        padding: 18px 20px; margin-bottom: 16px; }
+      .card h2 { margin: 0 0 4px; font-size: 15px; }
+      .card .desc { margin: 0 0 14px; font-size: 12px; color: var(--muted); line-height: 1.6; }
+      .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .mode { border: 1.5px solid var(--line); border-radius: 12px; padding: 14px;
+        cursor: pointer; transition: 0.15s; position: relative; }
+      .mode:hover { border-color: #bfdbfe; }
+      .mode.active { border-color: var(--primary); background: #eff6ff; }
+      .mode input { position: absolute; opacity: 0; }
+      .mode strong { display: block; font-size: 14px; margin-bottom: 6px; }
+      .mode span { font-size: 12px; color: var(--muted); line-height: 1.6; }
+      .field { margin-bottom: 14px; }
+      .field:last-child { margin-bottom: 0; }
+      label.title { display: block; font-size: 13px; margin-bottom: 6px; font-weight: 600; }
+      input[type="text"], input[type="number"], input[type="password"] {
+        width: 100%; height: 38px; border: 1px solid var(--line); border-radius: 9px;
+        padding: 0 12px; font-size: 13px; outline: none; background: #fff;
+      }
+      input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12); }
+      .hint { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.6; }
+      .row { display: flex; gap: 10px; align-items: center; }
+      .row > input { flex: 1; }
+      .check { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; line-height: 1.6; }
+      .check input { margin-top: 3px; }
+      button { font-family: inherit; cursor: pointer; border-radius: 9px; font-size: 13px;
+        border: 1px solid var(--line); background: #fff; height: 38px; padding: 0 16px; }
+      button:hover { border-color: #cbd5e1; }
+      button.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+      button.primary:hover { background: var(--primary-dark); }
+      button.primary:disabled { opacity: 0.6; cursor: not-allowed; }
+      .status { font-size: 12px; margin-top: 8px; min-height: 18px; }
+      .status.ok { color: var(--ok); }
+      .status.err { color: var(--err); }
+      details summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--muted); }
+      details[open] summary { margin-bottom: 14px; }
+      footer { position: fixed; left: 0; right: 0; bottom: 0; padding: 14px 32px;
+        background: rgba(245, 247, 251, 0.94); border-top: 1px solid var(--line);
+        display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(6px); }
+      footer .meta { font-size: 12px; color: var(--muted); }
+      footer .actions { display: flex; gap: 10px; }
+      .hidden { display: none !important; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">ERP</div>
+      <div>
+        <h1>AI-ERP 使用模式设置</h1>
+        <p id="subtitle">首次使用请选择运行方式，之后可在菜单「AI-ERP → 使用模式设置」里修改</p>
+      </div>
+    </header>
+
+    <section class="card">
+      <h2>运行方式</h2>
+      <p class="desc">本机运行：数据保存在这台电脑；连接服务器：多人共用同一套数据。</p>
+      <div class="modes">
+        <label class="mode active" id="modeLocalCard">
+          <input type="radio" name="mode" value="local" checked />
+          <strong>本机运行</strong>
+          <span>这台电脑安装即用，数据存本机。若给同事共用，可勾选下方「允许局域网访问」。</span>
+        </label>
+        <label class="mode" id="modeRemoteCard">
+          <input type="radio" name="mode" value="remote" />
+          <strong>连接服务器</strong>
+          <span>连接到已运行 AI-ERP 的服务器电脑，多人共用一套数据。</span>
+        </label>
+      </div>
+    </section>
+
+    <section class="card" id="localPanel">
+      <h2>本机运行设置</h2>
+      <p class="desc">端口保持默认即可；只有在同一台电脑上开了多个服务时才需要改。</p>
+      <div class="field">
+        <label class="title" for="port">服务端口</label>
+        <input type="number" id="port" min="1024" max="65535" value="8790" />
+      </div>
+      <div class="field">
+        <label class="check">
+          <input type="checkbox" id="bindLan" />
+          <span>允许局域网内其他电脑连接本机（推荐给「服务器电脑」勾选）</span>
+        </label>
+        <div class="hint" id="lanHint"></div>
+      </div>
+    </section>
+
+    <section class="card hidden" id="remotePanel">
+      <h2>服务器地址</h2>
+      <p class="desc">填写运行 AI-ERP 的电脑地址，一般由服务器管理员提供。</p>
+      <div class="field">
+        <label class="title" for="serverUrl">服务器地址</label>
+        <div class="row">
+          <input type="text" id="serverUrl" placeholder="http://192.168.1.10:8790" />
+          <button id="testBtn">测试连接</button>
+        </div>
+        <div class="status" id="testStatus"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <details id="aiDetails">
+        <summary>AI 助手配置（可选，不填也能正常使用）</summary>
+        <div class="field">
+          <label class="title" for="llmApiKey">大模型 API Key</label>
+          <input type="password" id="llmApiKey" placeholder="留空则关闭 AI 助手，使用内置规则引擎" />
+        </div>
+        <div class="field">
+          <label class="title" for="llmBaseUrl">API 地址</label>
+          <input type="text" id="llmBaseUrl" placeholder="https://api.deepseek.com/v1" />
+        </div>
+        <div class="field">
+          <label class="title" for="llmModel">模型名称</label>
+          <input type="text" id="llmModel" placeholder="deepseek-chat" />
+        </div>
+        <div class="hint">支持 OpenAI 兼容接口（DeepSeek、智谱、通义、本地 Ollama 等）。</div>
+      </details>
+    </section>
+
+    <section class="card">
+      <details id="advancedDetails">
+        <summary>高级设置（更新与诊断）</summary>
+        <div class="field">
+          <label class="title" for="updateUrl">自动更新地址</label>
+          <input type="text" id="updateUrl" placeholder="https://你的服务器/ai-erp/" />
+          <div class="hint">留空则不自动更新，可在「AI-ERP → 检查更新」里手动检查。</div>
+        </div>
+        <div class="field">
+          <label class="check">
+            <input type="checkbox" id="autoUpdate" checked />
+            <span>启动后自动检查新版本</span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="title" for="diagnosticUrl">诊断接收地址</label>
+          <input type="text" id="diagnosticUrl" placeholder="https://你的服务器/ai-erp/diagnostics" />
+          <div class="hint">客户在错误页点「发送诊断报告」时会把诊断包直接上传到这里；留空则只能导出到桌面手动发送。</div>
+        </div>
+        <div class="field">
+          <label class="title" for="diagnosticToken">诊断接收令牌（可选）</label>
+          <input type="text" id="diagnosticToken" placeholder="与接收端约定的口令，留空则不校验" />
+        </div>
+      </details>
+    </section>
+
+    <footer>
+      <div class="meta" id="meta"></div>
+      <div class="actions">
+        <button id="quitBtn">退出</button>
+        <button class="primary" id="saveBtn">保存并启动</button>
+      </div>
+    </footer>
+
+    <script>
+      let info = null
+
+      function el(id) { return document.getElementById(id) }
+      function setStatus(node, text, type) {
+        node.textContent = text || ''
+        node.className = 'status' + (type ? ' ' + type : '')
+      }
+
+      function currentMode() {
+        return document.querySelector('input[name="mode"]:checked').value
+      }
+
+      function toggleMode() {
+        const mode = currentMode()
+        el('localPanel').classList.toggle('hidden', mode !== 'local')
+        el('remotePanel').classList.toggle('hidden', mode !== 'remote')
+        el('modeLocalCard').classList.toggle('active', mode === 'local')
+        el('modeRemoteCard').classList.toggle('active', mode === 'remote')
+        updateLanHint()
+      }
+
+      function updateLanHint() {
+        const port = el('port').value || '8790'
+        if (el('bindLan').checked) {
+          el('lanHint').textContent =
+            '保存时会申请管理员权限放行防火墙端口 ' + port +
+            '。同事安装本软件后选择「连接服务器」，填写 http://本机IP:' + port + ' 即可。'
+        } else {
+          el('lanHint').textContent = '仅本机可用。勾选后同事才能从其他电脑连接这台机器。'
+        }
+      }
+
+      function fillForm(config) {
+        el('port').value = config.port || 8790
+        el('bindLan').checked = Boolean(config.bindLan)
+        el('serverUrl').value = config.serverUrl || ''
+        el('llmApiKey').value = config.llmApiKey || ''
+        el('llmBaseUrl').value = config.llmBaseUrl || ''
+        el('llmModel').value = config.llmModel || ''
+        el('updateUrl').value = config.updateUrl || ''
+        el('diagnosticUrl').value = config.diagnosticUrl || ''
+        el('diagnosticToken').value = config.diagnosticToken || ''
+        el('autoUpdate').checked = config.autoUpdate !== false
+        const remote = document.querySelector('input[value="remote"]')
+        const local = document.querySelector('input[value="local"]')
+        remote.checked = config.mode === 'remote'
+        local.checked = config.mode !== 'remote'
+        toggleMode()
+      }
+
+      async function load() {
+        info = await window.erp.setupGet()
+        fillForm(info.config || {})
+        el('meta').textContent =
+          '版本 ' + info.appVersion + ' ｜ 数据目录 ' + info.dataDir
+        el('subtitle').textContent = info.config && info.config.setupDone
+          ? '修改后点击「保存并启动」会重启应用生效'
+          : el('subtitle').textContent
+      }
+
+      async function save() {
+        const mode = currentMode()
+        const payload = {
+          mode,
+          serverUrl: el('serverUrl').value.trim(),
+          port: Number(el('port').value),
+          bindLan: el('bindLan').checked,
+          llmApiKey: el('llmApiKey').value.trim(),
+          llmBaseUrl: el('llmBaseUrl').value.trim(),
+          llmModel: el('llmModel').value.trim(),
+          updateUrl: el('updateUrl').value.trim(),
+          autoUpdate: el('autoUpdate').checked,
+          diagnosticUrl: el('diagnosticUrl').value.trim(),
+          diagnosticToken: el('diagnosticToken').value.trim()
+        }
+        if (mode === 'remote' && !payload.serverUrl) {
+          setStatus(el('testStatus'), '请先填写服务器地址', 'err')
+          return
+        }
+        el('saveBtn').disabled = true
+        el('saveBtn').textContent = '正在保存…'
+        const result = await window.erp.setupSave(payload)
+        if (!result.ok) {
+          el('saveBtn').disabled = false
+          el('saveBtn').textContent = '保存并启动'
+          alert(result.message || '保存失败')
+          return
+        }
+        el('saveBtn').textContent = '正在启动…'
+      }
+
+      async function testServer() {
+        const btn = el('testBtn')
+        btn.disabled = true
+        btn.textContent = '测试中…'
+        setStatus(el('testStatus'), '正在连接…', '')
+        try {
+          const result = await window.erp.testServer(el('serverUrl').value.trim())
+          setStatus(el('testStatus'), result.message, result.ok ? 'ok' : 'err')
+        } catch (error) {
+          setStatus(el('testStatus'), String(error.message || error), 'err')
+        } finally {
+          btn.disabled = false
+          btn.textContent = '测试连接'
+        }
+      }
+
+      document.querySelectorAll('input[name="mode"]').forEach((node) => {
+        node.addEventListener('change', toggleMode)
+      })
+      el('bindLan').addEventListener('change', updateLanHint)
+      el('port').addEventListener('input', updateLanHint)
+      el('saveBtn').addEventListener('click', save)
+      el('testBtn').addEventListener('click', testServer)
+      el('quitBtn').addEventListener('click', () => window.erp.quit())
+
+      load().catch((error) => {
+        el('meta').textContent = '加载配置失败：' + String(error.message || error)
+      })
+    </script>
+  </body>
+</html>

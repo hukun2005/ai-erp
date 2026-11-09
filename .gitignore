@@ -1,0 +1,57 @@
+# ================= 敏感配置（严禁提交） =================
+# 环境变量（包含密钥，绝对不要提交）
+.env
+*.env
+!*.env.example
+
+# electron 打包预置默认值（scripts/build.ps1 从 backend/.env 生成，含 llmApiKey）
+desktop/electron/defaults.json
+
+# ================= 数据库 / 业务数据 =================
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# ================= 备份目录 =================
+.backup*/
+backend/backups/
+*.bak
+
+# ================= Python =================
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+
+# ================= Node =================
+node_modules/
+
+# ================= 构建产物 / 发布 =================
+dist/
+build/
+desktop/release/
+desktop/build/
+backend/dist/
+backend/build/
+frontend/dist/
+
+# ================= 测试 / 迁移临时目录 =================
+pytest-work/
+migration-work/
+
+# ================= IDE =================
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ================= 第三方二进制 =================
+desktop/tools/cloudflared.exe
+
+# ================= 运行时数据 =================
+backend/uploads/

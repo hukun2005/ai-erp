@@ -1,0 +1,338 @@
+:root {
+  --brand: #6366f1;
+  --brand-dark: #4f46e5;
+  --brand-soft: #eef2ff;
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --text: #1f2937;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --border: #e5e7eb;
+  --border-light: #f1f5f9;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --sidebar: #111827;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.03);
+  --shadow-pop: 0 12px 32px rgba(15, 23, 42, 0.12);
+  --focus-ring: 0 0 0 3px rgba(99, 102, 241, 0.18);
+
+  /* 统一 Element Plus 主色为品牌靛蓝，避免默认蓝色与侧栏冲突 */
+  --el-color-primary: #6366f1;
+  --el-color-primary-light-3: #8b8ff5;
+  --el-color-primary-light-5: #a5a8f7;
+  --el-color-primary-light-7: #c7c9fa;
+  --el-color-primary-light-8: #d8d9fc;
+  --el-color-primary-light-9: #eef0fe;
+  --el-color-primary-dark-2: #4f46e5;
+  --el-border-radius-base: 8px;
+  --el-font-size-base: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 键盘操作时给出清晰的焦点环，鼠标点击不显示 */
+button:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ── 页面骨架 ─────────────────────────────────────────── */
+.page {
+  padding: 20px 24px 36px;
+  max-width: 1680px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.page-title {
+  font-size: 19px;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: 0.2px;
+  line-height: 1.35;
+}
+
+.page-subtitle {
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  margin: 5px 0 0;
+  line-height: 1.55;
+  max-width: 76ch;
+}
+
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+}
+
+.toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+/* 台账页的二级筛选行：日期区间、金额区间与排序 */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.filter-dash {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.toolbar-count {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.money {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 表格为空时的统一提示：比一行灰字更容易被看见 */
+.empty-text {
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 30px 12px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* ── Element Plus 细节统一 ────────────────────────────── */
+.el-button {
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.el-button:not(.is-text):not(.is-link):focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.el-button + .el-button {
+  margin-left: 8px;
+}
+
+.el-button--primary {
+  box-shadow: 0 1px 2px rgba(79, 70, 229, 0.24);
+}
+
+.el-input__wrapper,
+.el-select__wrapper,
+.el-textarea__inner {
+  border-radius: 8px;
+  box-shadow: 0 0 0 1px var(--border) inset;
+}
+
+.el-input__wrapper.is-focus,
+.el-select__wrapper.is-focused {
+  box-shadow: 0 0 0 1px var(--el-color-primary) inset, var(--focus-ring);
+}
+
+.el-input__inner::placeholder,
+.el-textarea__inner::placeholder {
+  color: #b6bcc8;
+}
+
+.el-table {
+  --el-table-border-color: var(--border-light);
+  --el-table-header-bg-color: #fafbfc;
+  --el-table-row-hover-bg-color: #f7f8ff;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.el-table th.el-table__cell {
+  background: #fafbfc !important;
+  font-weight: 600;
+  color: #6b7280;
+  font-size: 12px;
+  letter-spacing: 0.2px;
+}
+
+.el-table .el-table__cell {
+  padding: 8px 0;
+}
+
+.el-table__inner-wrapper::before {
+  display: none;
+}
+
+.el-table .cell {
+  line-height: 1.5;
+}
+
+.el-table .el-link,
+.el-table .el-button.is-link {
+  font-weight: 500;
+}
+
+.el-tag {
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.el-tag--small {
+  padding: 0 7px;
+}
+
+.el-pagination {
+  margin-top: 14px;
+  justify-content: flex-end;
+  row-gap: 8px;
+  flex-wrap: wrap;
+}
+
+.el-dialog {
+  border-radius: 14px;
+  overflow: hidden;
+  max-width: calc(100vw - 32px);
+}
+
+.el-dialog__header {
+  padding: 18px 22px 14px;
+  margin-right: 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.el-dialog__body {
+  padding: 18px 22px;
+  max-height: 64vh;
+  overflow-y: auto;
+}
+
+.el-dialog__footer {
+  padding: 12px 22px 18px;
+  border-top: 1px solid var(--border-light);
+}
+
+.el-drawer__header {
+  margin-bottom: 0;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.el-drawer__body {
+  padding: 18px 22px;
+}
+
+.el-tabs__item {
+  font-weight: 500;
+}
+
+.el-form-item {
+  margin-bottom: 18px;
+}
+
+.el-form-item__label {
+  color: #374151;
+  font-weight: 500;
+}
+
+.el-descriptions__label {
+  color: var(--text-secondary) !important;
+  font-weight: 500 !important;
+}
+
+.el-message-box {
+  border-radius: 14px;
+  max-width: calc(100vw - 32px);
+}
+
+.el-dropdown-menu__item {
+  font-size: 13px;
+  gap: 8px;
+}
+
+.el-popper.is-light {
+  border-radius: 10px;
+}
+
+/* ── 滚动条 ───────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d8dce7;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #c4cad8;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@media (max-width: 900px) {
+  .page {
+    padding: 16px;
+  }
+
+  .page-title {
+    font-size: 17px;
+  }
+
+  .page-header {
+    margin-bottom: 12px;
+  }
+}
+
+/* 关掉动画偏好下不做位移过渡，避免前庭不适 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

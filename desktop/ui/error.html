@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI-ERP 启动失败</title>
+    <style>
+      :root {
+        --line: #e5e9f2; --text: #0f172a; --muted: #64748b;
+        --primary: #2563eb; --danger: #dc2626;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; }
+      body { display: flex; flex-direction: column; background: #f8fafc; color: var(--text);
+        font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif; }
+      .head { padding: 30px 34px 6px; display: flex; gap: 16px; align-items: flex-start; }
+      .mark { width: 46px; height: 46px; border-radius: 50%; background: #fee2e2;
+        color: var(--danger); display: flex; align-items: center; justify-content: center;
+        font-size: 24px; font-weight: 700; flex: none; }
+      h1 { margin: 0 0 6px; font-size: 20px; }
+      .sub { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.7; }
+      .body { flex: 1; padding: 16px 34px; overflow: auto; }
+      .message { background: #fff; border: 1px solid #fecaca; border-left: 4px solid var(--danger);
+        border-radius: 10px; padding: 14px 16px; font-size: 13px; line-height: 1.8;
+        white-space: pre-wrap; word-break: break-word; }
+      .section { margin-top: 16px; }
+      .section h2 { font-size: 13px; color: var(--muted); font-weight: 600; margin: 0 0 8px; }
+      pre { margin: 0; background: #0f172a; color: #cbd5e1; border-radius: 10px;
+        padding: 14px; font-size: 12px; line-height: 1.6; max-height: 220px; overflow: auto;
+        white-space: pre-wrap; word-break: break-all; font-family: Consolas, monospace; }
+      .actions { padding: 18px 34px 24px; display: flex; gap: 10px; flex-wrap: wrap;
+        border-top: 1px solid var(--line); background: #fff; }
+      button { font-family: inherit; font-size: 13px; height: 38px; padding: 0 16px;
+        border-radius: 9px; border: 1px solid var(--line); background: #fff; cursor: pointer; }
+      button:hover { border-color: #cbd5e1; }
+      button.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+      button.primary:hover { background: #1d4ed8; }
+      .spacer { flex: 1; }
+      .meta { font-size: 12px; color: var(--muted); margin-top: 12px; line-height: 1.7; }
+      .toast { font-size: 12px; color: #16a34a; margin-left: 4px; align-self: center; }
+    </style>
+  </head>
+  <body>
+    <div class="head">
+      <div class="mark">!</div>
+      <div>
+        <h1>AI-ERP 没能正常启动</h1>
+        <p class="sub">
+          请先点击「重试」。如果重试仍然失败，点击「发送诊断报告」，日志和运行信息会直接发回技术支持；
+          没有网络时可点「导出诊断包」，把生成的 zip 手动发过去。
+        </p>
+      </div>
+    </div>
+
+    <div class="body">
+      <div class="message" id="message">正在读取错误信息…</div>
+
+      <div class="section">
+        <h2>后台服务最近输出</h2>
+        <pre id="logs">（无）</pre>
+      </div>
+
+      <div class="section">
+        <h2>运行信息</h2>
+        <pre id="system">（无）</pre>
+      </div>
+      <div class="meta" id="meta"></div>
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="retryBtn">重试</button>
+      <button id="sendBtn">发送诊断报告</button>
+      <button id="setupBtn">切换使用模式</button>
+      <button id="diagBtn">导出诊断包</button>
+      <button id="logBtn">打开日志目录</button>
+      <span class="spacer"></span>
+      <span class="toast" id="toast"></span>
+      <button id="quitBtn">退出</button>
+    </div>
+
+    <script>
+      function el(id) { return document.getElementById(id) }
+
+      function render(state, info) {
+        el('message').textContent = state.error || '未知错误'
+        const logs = state.logs && state.logs.length ? state.logs.join('\n') : '（无输出）'
+        el('logs').textContent = logs
+        el('system').textContent = [
+          '应用版本: ' + info.appVersion,
+          '运行模式: ' + (state.mode || '未知'),
+          '服务地址: ' + (state.url || '无'),
+          '后端端口: ' + (state.port || '无'),
+          '后端退出信息: ' + (state.lastExit ? JSON.stringify(state.lastExit) : '无'),
+          '健康检查: ' + (state.health ? JSON.stringify(state.health) : '未就绪')
+        ].join('\n')
+        el('meta').textContent =
+          '诊断包会包含日志、配置、数据库副本（密钥已隐藏），请只发送给可信的技术支持。' +
+          '\n数据目录：' + info.dataDir + '　日志目录：' + info.logDir
+      }
+
+      async function refresh() {
+        try {
+          const [state, info] = await Promise.all([window.erp.getError(), window.erp.appInfo()])
+          render(state, info)
+        } catch (error) {
+          el('message').textContent = '读取错误信息失败：' + String(error.message || error)
+        }
+      }
+
+      el('retryBtn').addEventListener('click', () => window.erp.retry())
+      el('setupBtn').addEventListener('click', () => window.erp.openSetup())
+      el('logBtn').addEventListener('click', () => window.erp.openLogs())
+      el('quitBtn').addEventListener('click', () => window.erp.quit())
+      el('diagBtn').addEventListener('click', async () => {
+        el('toast').textContent = '正在打包…'
+        const result = await window.erp.exportDiagnostics()
+        el('toast').textContent = result.ok ? '已导出：' + result.path : '导出失败：' + (result.message || '')
+      })
+      el('sendBtn').addEventListener('click', async () => {
+        el('sendBtn').disabled = true
+        el('toast').style.color = '#64748b'
+        el('toast').textContent = '正在打包并发送…'
+        try {
+          const result = await window.erp.sendDiagnostics()
+          el('toast').style.color = result.ok ? '#16a34a' : '#dc2626'
+          el('toast').textContent = result.message || (result.ok ? '已发送' : '发送失败')
+        } catch (error) {
+          el('toast').style.color = '#dc2626'
+          el('toast').textContent = '发送失败：' + String(error.message || error)
+        } finally {
+          el('sendBtn').disabled = false
+        }
+      })
+
+      window.erp.onErrorRefresh(refresh)
+      refresh()
+    </script>
+  </body>
+</html>
